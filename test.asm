@@ -57,8 +57,8 @@ jumpe_triangle:
     call val
     mov word[r8d], ax
     add r8d, 4
-    dec tour_triangle
-    cmp tour_triangle, 0    
+    dec [tour_triangle]
+    cmp [tour_triangle], 0    
     jg jumpe_triangle
     
 
