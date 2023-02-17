@@ -4,7 +4,6 @@ extern scanf
 
 global main
 
-
 section .data
     response: db    "Le valeur est %d",10,0
     number: db 400
@@ -12,8 +11,6 @@ section .data
 section .bss
 
 section .text
-
-
 
 
 global val
@@ -35,6 +32,31 @@ pop rbp
 ret
 
 
+creer triangle:
+    push rbp
+
+    mov rax, 0
+    mov rax, [number]
+    mov rdi, rax
+    call val
+
+    mov rax, 0
+    mov rax, [number]
+    mov rdi, rax
+    call val
+
+    mov rax, 0
+    mov rax, [number]
+    mov rdi, rax
+    call val
+
+    pop rbp
+    ret
+
+
+
+
+
 main:
 
 push rbp
@@ -49,6 +71,7 @@ mov rdi, response
 mov si, ax
 mov rax, 0
 call printf
+
 
 
 fin:
