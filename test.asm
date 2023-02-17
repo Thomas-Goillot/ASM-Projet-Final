@@ -63,6 +63,36 @@ jumpe_triangle:
     
 
 
+mov rdi, response
+mov rsi , [tab_coord + 0 * 4]
+mov rax, 0
+call printf
+
+mov rdi, response
+mov rsi , [tab_coord + 1 * 4]
+mov rax, 0
+call printf
+
+mov rdi, response
+mov rsi , [tab_coord + 2 * 4]
+mov rax, 0
+call printf
+
+mov rdi, response
+mov rsi , [tab_coord + 3 * 4]
+mov rax, 0
+call printf
+
+mov rdi, response
+mov rsi , [tab_coord + 4 * 4]
+mov rax, 0
+call printf
+
+mov rdi, response
+mov rsi , [tab_coord + 5 * 4]
+mov rax, 0
+call printf
+
 fin:
 pop rbp
 ; Pour fermer le programme proprement :
