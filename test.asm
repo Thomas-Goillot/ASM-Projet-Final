@@ -15,6 +15,7 @@ section .bss
 section .text
 
 
+
 global val
 val:
     push rbp
@@ -22,7 +23,8 @@ val:
 value:
     mov ax, 0
     rdrand ax
-    jnc value
+    cmp ax, 400
+    jge value
 
 modulo:
     mov bx, di
@@ -92,6 +94,9 @@ mov rdi, response
 mov rsi , [tab_coord + 5 * 4]
 mov rax, 0
 call printf
+
+
+
 
 fin:
 pop rbp
