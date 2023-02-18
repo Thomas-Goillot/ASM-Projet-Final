@@ -1,5 +1,6 @@
 extern printf
 extern scanf
+extern srand
 
 
 global main
