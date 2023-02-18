@@ -67,28 +67,14 @@ main:
         jg .jumpe_triangle
 
     ; Afficher les valeurs de tab_coord
-    mov rdi, response
     mov esi, [tab_coord + 0 * 4]
+    mov edi, [tab_coord + 1 * 4]
+    mov ebx, [tab_coord + 2 * 4]
     call printf
 
-    mov rdi, response
-    mov esi, [tab_coord + 1 * 4]
-    call printf
-
-    mov rdi, response
-    mov esi, [tab_coord + 2 * 4]
-    call printf
-
-    mov rdi, response
     mov esi, [tab_coord + 3 * 4]
-    call printf
-
-    mov rdi, response
-    mov esi, [tab_coord + 4 * 4]
-    call printf
-
-    mov rdi, response
-    mov esi, [tab_coord + 5 * 4]
+    mov edi, [tab_coord + 4 * 4]
+    mov ebx, [tab_coord + 5 * 4]
     call printf
 
     pop rbp
