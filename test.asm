@@ -11,35 +11,9 @@ section .data
     tour_triangle: db 6
 
 section .bss
-    tab_coord: resd 6
+    tab_coord: resd 3  ; alloue suffisamment de mémoire pour 3 coordonnées
     
 section .text
-
-; Fonction pour générer un nombre aléatoire entre 0 et 399
-global val
-val:
-    push rbp
-    mov rbp, rsp
-    
-    ; Générer un nombre aléatoire avec la fonction RDRAND
-    mov ecx, 10 ; Limite le nombre de tentatives à 10
-    .loop:
-        xor eax, eax
-        rdrand eax
-        jc .success
-        loop .loop
-        mov eax, [number] ; Si la génération aléatoire a échoué, prendre la valeur 400
-    .success:
-    
-    ; S'assurer que la valeur générée est entre 0 et 399
-    xor edx, edx
-    div dword [number]
-    mov eax, edx
-    
-    pop rbp
-    ret
-
-
 main:
 
     push rbp
@@ -57,7 +31,7 @@ main:
     mov r8, tab_coord
 
     ; Générer les valeurs de tab_coord
-    mov byte[tour_triangle], 6
+    mov byte[tour_triangle], 3  ; met à jour le compteur à 3
     .jumpe_triangle:
         call val
         mov [r8], eax
@@ -67,14 +41,16 @@ main:
         jg .jumpe_triangle
 
     ; Afficher les valeurs de tab_coord
+    mov rdi, response
     mov esi, [tab_coord + 0 * 4]
-    mov edi, [tab_coord + 1 * 4]
-    mov ebx, [tab_coord + 2 * 4]
     call printf
 
-    mov esi, [tab_coord + 3 * 4]
-    mov edi, [tab_coord + 4 * 4]
-    mov ebx, [tab_coord + 5 * 4]
+    mov rdi, response
+    mov esi, [tab_coord + 1 * 4]
+    call printf
+
+    mov rdi, response
+    mov esi, [tab_coord + 2 * 4]
     call printf
 
     pop rbp
