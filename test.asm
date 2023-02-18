@@ -15,7 +15,6 @@ section .bss
 section .text
 
 
-
 global val
 val:
     push rbp
@@ -23,16 +22,27 @@ val:
 value:
     mov ax, 0
     rdrand ax
-    cmp ax, 400
-    jge value
+    jnc value
 
 modulo:
     mov bx, di
     mov dx, 0
     div bx
     mov ax, dx
+    cmp ax, 0
+    jl modulo_2
+    cmp ax, 400
+    jg modulo_2
+    jmp fin_modulo
 
+modulo_2:
+    dec ax
+    cmp ax, 0
+    jl modulo
+    cmp ax, 400
+    jg modulo
 
+fin_modulo:
 pop rbp
 ret
 
