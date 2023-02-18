@@ -1,4 +1,3 @@
-
 extern printf
 extern scanf
 
@@ -30,8 +29,7 @@ modulo:
     mov dx, 0
     div bx
     mov ax, dx
-    cmp ax, 400
-    jge modulo
+
 
 pop rbp
 ret
@@ -94,8 +92,6 @@ mov rdi, response
 mov rsi , [tab_coord + 5 * 4]
 mov rax, 0
 call printf
-
-
 
 fin:
 pop rbp
