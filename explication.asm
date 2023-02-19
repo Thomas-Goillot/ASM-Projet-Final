@@ -5,7 +5,7 @@ global main
 
 section .data
 
-valeur: db 10
+message: db "la valeur est de %d", 0
 
 section .bss
 
@@ -13,9 +13,14 @@ section .text
 main:
 push rbp
 
-mov ax, 0
-mov ax, response
+mov eax, 10
+push eax
+push message
 call printf
+add esp, 8
+
+message:
+db "%d", 0
 
 
 fin:
