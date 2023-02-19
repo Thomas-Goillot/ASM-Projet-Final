@@ -5,15 +5,19 @@ extern srand
 
 global main
 
+
 section .data
     response: db    "La valeur est %d",10,0
     number: dd 400
     tour_triangle: db 6
 
+
 section .bss
     tab_coord: resd 6
     
+
 section .text
+
 
 ; Fonction pour générer un nombre aléatoire entre 0 et 399
 global val
@@ -29,8 +33,9 @@ val:
         jc .success
         loop .loop
         mov eax, [number] ; Si la génération aléatoire a échoué, prendre la valeur 400
+
+
     .success:
-    
     ; S'assurer que la valeur générée est entre 0 et 399
     xor edx, edx
     div dword [number]
@@ -41,7 +46,6 @@ val:
 
 
 main:
-
     push rbp
 
     ; Initialiser le générateur de nombres aléatoires
@@ -77,7 +81,7 @@ main:
 
     mov rdi, response
     mov esi, [tab_coord + 2 * 4]
-    call printf
+    call 
 
     mov rdi, response
     mov esi, [tab_coord + 3 * 4]
