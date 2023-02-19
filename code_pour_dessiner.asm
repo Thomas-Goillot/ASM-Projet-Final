@@ -35,6 +35,7 @@ extern exit
 global main
 
 section .bss
+tab_coord: resd 6
 display_name:	resq	1
 screen:			resd	1
 depth:         	resd	1
@@ -45,6 +46,8 @@ window:		resq	1
 gc:		resq	1
 
 section .data
+number: dd 400
+tour_triangle: db 6
 
 event:		times	24 dq 0
 
@@ -59,7 +62,61 @@ section .text
 ;########### PROGRAMME PRINCIPAL ##################
 ;##################################################
 
+;##################################################
+;########### FCT VAL             ##################
+;##################################################
+
+global val
+val:
+    push rbp
+    mov rbp, rsp
+    
+    ; Générer un nombre aléatoire avec la fonction RDRAND
+    mov ecx, 10 ; Limite le nombre de tentatives à 10
+    .loop:
+        xor eax, eax
+        rdrand eax
+        jc .success
+        loop .loop
+        mov eax, [number] ; Si la génération aléatoire a échoué, prendre la valeur 400
+
+
+    .success:
+    ; S'assurer que la valeur générée est entre 0 et 399
+    xor edx, edx
+    div dword [number]
+    mov eax, edx
+    
+    pop rbp
+    ret
+
+
 main:
+
+ ; Initialiser le générateur de nombres aléatoires
+    rdtsc ; Utiliser l'horodatage CPU comme graine
+    mov ecx, eax
+    mov eax, [rsp+4]
+    xor eax, ecx
+    mov ecx, eax
+    xor eax, ecx
+    mov eax, ecx
+    call srand
+
+    mov r8, tab_coord
+
+    ; Générer les valeurs de tab_coord
+    mov byte[tour_triangle], 6
+    .jumpe_triangle:
+        call val
+        mov [r8], eax
+        add r8, 4
+        dec byte[tour_triangle]
+        cmp byte[tour_triangle], 0    
+        jg .jumpe_triangle
+
+
+
 xor     rdi,rdi
 call    XOpenDisplay	; Création de display
 mov     qword[display_name],rax	; rax=nom du display
@@ -221,6 +278,36 @@ mov ecx,dword[x1]	; coordonnée source en x
 mov r8d,dword[y1]	; coordonnée source en y
 mov r9d,dword[x2]	; coordonnée destination en x
 push qword[y2]		; coordonnée destination en y
+call XDrawLine
+
+mov rdi,qword[display_name]
+mov rsi,qword[window]
+mov rdx,qword[gc]
+mov ecx, [tab_coord + 0 * 4]	; coordonnée source en x
+mov r8d, [tab_coord + 1 * 4]	; coordonnée source en y
+mov r9d, [tab_coord + 2 * 4]	; coordonnée destination en x
+mov r12d, [tab_coord + 3 * 4]	; coordonnée destination en y
+push r12	; coordonnée destination en y
+call XDrawLine
+
+mov rdi,qword[display_name]
+mov rsi,qword[window]
+mov rdx,qword[gc]
+mov ecx, [tab_coord + 2 * 4]	; coordonnée source en x
+mov r8d, [tab_coord + 3 * 4]	; coordonnée source en y
+mov r9d, [tab_coord + 4 * 4]; coordonnée destination en x
+mov r12d,[tab_coord + 5 * 4]; coordonnée destination en y
+push r12	; coordonnée destination en y
+call XDrawLine
+
+mov rdi,qword[display_name]
+mov rsi,qword[window]
+mov rdx,qword[gc]
+mov ecx, [tab_coord + 0 * 4]	; coordonnée source en x
+mov r8d, [tab_coord + 1 * 4]	; coordonnée source en y
+mov r9d, [tab_coord + 4 * 4]; coordonnée destination en x
+mov r12d,[tab_coord + 5 * 4]; coordonnée destination en y
+push r12	; coordonnée destination en y
 call XDrawLine
 
 
