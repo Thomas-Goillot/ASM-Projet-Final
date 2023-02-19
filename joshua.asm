@@ -1,46 +1,55 @@
-extern printf
-extern scanf
+; Initialiser le générateur de nombres aléatoires
+rdtsc ; Utiliser l'horodatage CPU comme graine
+mov ecx, eax
+mov eax, [rsp+4]
+xor eax, ecx
+mov ecx, eax
+xor eax, ecx
+mov eax, ecx
+call srand
 
-global main
+mov r8, tab_coord
 
-section .data
-
-section .bss
-
-section .text
-main:
-
-push rbp
-
-
-    mov ah, 0ch    ; Prépare le mode 0Ch
-    mov al, 0h     ; Active le mode 0Ch
-    int 10h        ; Appel interrupt 10h
+; Générer les valeurs de tab_coord
+mov byte[tour_triangle], 6
+jumpe_triangle:
+    call val
+    mov [r8], eax
+    add r8, 4
+    dec byte[tour_triangle]
+    cmp byte[tour_triangle], 0    
+    jg jumpe_triangle
     
-    mov bh, 0h     ; Définit le plan de couleur a 0
-    mov bl, 1h     ; Définit la couleur à 1
-    
-    mov cx, 0h     ; Défini le compteur cx à 0
-    mov dx, 0h     ; Défini le compteur dx à 0
-    
-Boucle:
-    mov ah, 0ch    ; Prépare le mode 0Ch
-    int 10h        ; Appel interrupt 10h
-    inc cx         ; Incrémente le compteur cx
-    cmp cx, 25     ; Compare si cx est égal à 25
-    jne Boucle     ; Si non, retourne à la boucle
-    jmp Fin        ; Sinon, saute à Fin
+; Tracer les 3 traits
+mov r8, tab_coord
+mov eax, [r8]
+mov edx, [r8+4]
+mov rdi, response
+mov esi, eax
+mov edi, edx
+call printf
 
-Fin:
-    ; Fin du programme
-    mov ah
+add r8, 4
+mov eax, [r8]
+mov edx, [r8+4]
+mov rdi, response
+mov esi, eax
+mov edi, edx
+call printf
 
+add r8, 4
+mov eax, [r8]
+mov edx, [tab_coord]
+mov rdi, response
+mov esi, eax
+mov edi, edx
+call printf
 
-fin:
 pop rbp
+
 ; Pour fermer le programme proprement :
-mov    rax, 60
-mov    rdi, 0
+mov    eax, 60
+xor    edi, edi
 syscall
 
 ret
