@@ -1,101 +1,52 @@
-extern printf
-extern scanf
-extern srand
-
-
-global main
-
-section .data
-    response: db    "La valeur est %d",10,0
-    number: dd 400
-    tour_triangle: db 6
-
-section .bss
-    tab_coord: resd 6
-    
 section .text
 
-; Fonction pour générer un nombre aléatoire entre 0 et 399
-global val
-val:
-    push rbp
-    mov rbp, rsp
-    
-    ; Générer un nombre aléatoire avec la fonction RDRAND
-    mov ecx, 10 ; Limite le nombre de tentatives à 10
-    .loop:
-        xor eax, eax
-        rdrand eax
-        jc .success
-        loop .loop
-        mov eax, [number] ; Si la génération aléatoire a échoué, prendre la valeur 400
-    .success:
-    
-    ; S'assurer que la valeur générée est entre 0 et 399
-    xor edx, edx
-    div dword [number]
-    mov eax, edx
-    
-    pop rbp
-    ret
+global  _start
+
+_start:
+
+mov esi, 0 ; compteur
+loop:
+mov eax, 9 ; définit eax à 9
+cdq ; convertit eax en dx:ax
+mov ebx, 0 ; ebx à 0 
+mov ecx, 9 ; ecx à 9
+
+mov edx, 5 ; edx à 5
+
+div edx ; eax = eax/edx et le reste dans edx
+
+mov ebx, eax ; ebx = eax
+
+mov eax, 9 ; eax à 9
+cdq ; convertit eax en dx:ax
+
+mov edx, 3 ; edx à 3
+
+div edx ; eax = eax/edx et le reste dans edx
+
+mov ecx, eax ; ecx = eax
 
 
-main:
+; afficher les variables
+mov edx, ebx ; définit edx = ebx
+mov eax, 4 ; définit eax = 4
+int 0x80 ; afficher ebx
 
-    push rbp
+mov edx, ecx ; définit edx = ecx
+mov eax, 4 ; définit eax = 4
+int 0x80 ; afficher ecx
 
-    ; Initialiser le générateur de nombres aléatoires
-    rdtsc ; Utiliser l'horodatage CPU comme graine
-    mov ecx, eax
-    mov eax, [rsp+4]
-    xor eax, ecx
-    mov ecx, eax
-    xor eax, ecx
-    mov eax, ecx
-    call srand
+; saut de ligne
+mov edx, 1 ; définit edx à 1
+mov ecx, 10 ; définit ecx à 10
+mov ebx, 1 ; définit ebx à 1
+mov eax, 4 ; définit eax à 4
+int 0x80 ; afficher le saut de ligne
 
-    mov r8, tab_coord
+inc esi ; incrémente compteur
+cmp esi, 5 ; compare esi à 5
+jne loop ; saute si pas égal
 
-    ; Générer les valeurs de tab_coord
-    mov byte[tour_triangle], 6
-    .jumpe_triangle:
-        call val
-        mov [r8], eax
-        add r8, 4
-        dec byte[tour_triangle]
-        cmp byte[tour_triangle], 0    
-        jg .jumpe_triangle
 
-    ; Afficher les valeurs de tab_coord
-    mov rdi, response
-    mov esi, [tab_coord + 0 * 4]
-    call printf
-
-    mov rdi, response
-    mov esi, [tab_coord + 1 * 4]
-    call printf
-
-    mov rdi, response
-    mov esi, [tab_coord + 2 * 4]
-    call printf
-
-    mov rdi, response
-    mov esi, [tab_coord + 3 * 4]
-    call printf
-
-    mov rdi, response
-    mov esi, [tab_coord + 4 * 4]
-    call printf
-
-    mov rdi, response
-    mov esi, [tab_coord + 5 * 4]
-    call printf
-
-    pop rbp
-
-    ; Pour fermer le programme proprement :
-    mov    eax, 60
-    xor    edi, edi
-    syscall
-
-    ret
+mov eax,1 ; code retour
+int 0x80 ; quitte le programme
