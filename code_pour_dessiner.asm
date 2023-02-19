@@ -13,7 +13,7 @@ extern XDrawLine
 extern XDrawPoint
 extern XFillArc
 extern XNextEvent
-
+extern srand
 ; external functions from stdio library (ld-linux-x86-64.so.2)    
 extern printf
 extern exit
