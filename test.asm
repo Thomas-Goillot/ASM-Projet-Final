@@ -95,14 +95,9 @@ main:
     mov esi, [tab_coord + 5 * 4]
     call printf
 
-    ;creer moi un triangle avec les valeurs generees dans tab_coord
-    mov rdi, response
-    mov esi, [tab_coord + 0 * 4]
-    call printf
 
-    mov rdi, response
-    mov esi, [tab_coord + 1 * 4]
-    call printf
+
+
 
     pop rbp
 
