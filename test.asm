@@ -81,7 +81,7 @@ main:
 
     mov rdi, response
     mov esi, [tab_coord + 2 * 4]
-    call 
+    call printf
 
     mov rdi, response
     mov esi, [tab_coord + 3 * 4]
@@ -103,8 +103,6 @@ main:
     mov rdi, response
     mov esi, [tab_coord + 1 * 4]
     call printf
-
-
 
     pop rbp
 
