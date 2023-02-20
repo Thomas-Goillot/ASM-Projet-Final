@@ -32,11 +32,13 @@ extern exit
 %define DWORD	4
 %define WORD	2
 %define BYTE	1
+%define NbTriangle 5
 
 global main
 
 section .bss
-tab_coord: resd 6
+
+tab_coord: times 6*NbTriangle dd 0
 display_name:	resq	1
 screen:			resd	1
 depth:         	resd	1
