@@ -1,3 +1,4 @@
+ 
 ; external functions from X11 library
 extern XOpenDisplay
 extern XDisplayName
@@ -32,11 +33,11 @@ extern exit
 %define DWORD	4
 %define WORD	2
 %define BYTE	1
+%define nombre_repetition 3
 
 global main
 
 section .bss
-
 tab_coord: resd 6
 display_name:	resq	1
 screen:			resd	1
@@ -48,9 +49,10 @@ window:		resq	1
 gc:		resq	1
 
 section .data
-boucle: db 2 ;nombre de triangles
 number: dd 400
-tour_triangle: db 6
+tour_triangle: db 6 
+repetition_atteint: dd nombre_repetition
+test: dd "nombre = %d",10,0
 
 event:		times	24 dq 0
 
@@ -95,28 +97,6 @@ val:
 
 
 main:
-
- ; Initialiser le générateur de nombres aléatoires
-    rdtsc ; Utiliser l'horodatage CPU comme graine
-    mov ecx, eax
-    mov eax, [rsp+4]
-    xor eax, ecx
-    mov ecx, eax
-    xor eax, ecx
-    mov eax, ecx
-    call srand
-
-    mov r8, tab_coord
-
-    ; Générer les valeurs de tab_coord
-    mov byte[tour_triangle], 6
-    .jumpe_triangle:
-        call val
-        mov [r8], eax
-        add r8, 4
-        dec byte[tour_triangle]
-        cmp byte[tour_triangle], 0    
-        jg .jumpe_triangle
 
 
 
@@ -182,7 +162,6 @@ jmp boucle
 ;#########################################
 ;#		DEBUT DE LA ZONE DE DESSIN		 #
 ;#########################################
-
 dessin:
 
 ; couleurs sous forme RRGGBB où RR esr le niveau de rouge, GG le niveua de vert et BB le niveau de bleu
@@ -284,6 +263,35 @@ mov r9d,dword[x2]	; coordonnée destination en x
 push qword[y2]		; coordonnée destination en y
 call XDrawLine
 
+
+; ----------------------------------------------teyvuhb jknzl, fgljHJKNML?F GLZHBJZNEFQNLKFMEZMLZKEN  
+
+
+
+debut_boucle:
+ ; Initialiser le générateur de nombres aléatoires
+    rdtsc ; Utiliser l'horodatage CPU comme graine
+    mov ecx, eax
+    mov eax, [rsp+4]
+    xor eax, ecx
+    mov ecx, eax
+    xor eax, ecx
+    mov eax, ecx
+    call srand
+
+    mov r8, tab_coord
+
+    ; Générer les valeurs de tab_coord
+    mov byte[tour_triangle], 6 
+    .jumpe_triangle:
+        call val
+        mov [r8], eax
+        add r8, 4
+        dec byte[tour_triangle]
+        cmp byte[tour_triangle], 0    
+        jg .jumpe_triangle
+
+
 mov rdi,qword[display_name]
 mov rsi,qword[window]
 mov rdx,qword[gc]
@@ -313,6 +321,13 @@ mov r9d, [tab_coord + 4 * 4]; coordonnée destination en x
 mov r12d,[tab_coord + 5 * 4]; coordonnée destination en y
 push r12	; coordonnée destination en y
 call XDrawLine
+
+call val
+
+dec dword[repetition_atteint]
+cmp dword[repetition_atteint],1
+jg debut_boucle
+
 
 
 ; ############################
