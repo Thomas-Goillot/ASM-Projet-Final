@@ -13,7 +13,6 @@ extern XDrawLine
 extern XDrawPoint
 extern XFillArc
 extern XNextEvent
-extern srand
 
 ; external functions from stdio library (ld-linux-x86-64.so.2)    
 extern printf
@@ -36,7 +35,6 @@ extern exit
 global main
 
 section .bss
-
 tab_coord: resd 6
 display_name:	resq	1
 screen:			resd	1
@@ -48,7 +46,6 @@ window:		resq	1
 gc:		resq	1
 
 section .data
-boucle: db 2 ;nombre de triangles
 number: dd 400
 tour_triangle: db 6
 
@@ -182,7 +179,6 @@ jmp boucle
 ;#########################################
 ;#		DEBUT DE LA ZONE DE DESSIN		 #
 ;#########################################
-
 dessin:
 
 ; couleurs sous forme RRGGBB où RR esr le niveau de rouge, GG le niveua de vert et BB le niveau de bleu
