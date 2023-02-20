@@ -32,11 +32,11 @@ extern exit
 %define DWORD	4
 %define WORD	2
 %define BYTE	1
+%define boucle 3
 
 global main
 
 section .bss
-
 tab_coord: resd 6
 display_name:	resq	1
 screen:			resd	1
@@ -48,7 +48,6 @@ window:		resq	1
 gc:		resq	1
 
 section .data
-boucle: db 2 ;nombre de triangles
 number: dd 400
 tour_triangle: db 6
 
@@ -182,7 +181,6 @@ jmp boucle
 ;#########################################
 ;#		DEBUT DE LA ZONE DE DESSIN		 #
 ;#########################################
-
 dessin:
 
 ; couleurs sous forme RRGGBB où RR esr le niveau de rouge, GG le niveua de vert et BB le niveau de bleu
@@ -284,6 +282,20 @@ mov r9d,dword[x2]	; coordonnée destination en x
 push qword[y2]		; coordonnée destination en y
 call XDrawLine
 
+
+; ----------------------------------------------teyvuhb jknzl, fgljHJKNML?F GLZHBJZNEFQNLKFMEZMLZKEN  
+
+
+
+debut_boucle:
+; Décaler le compteur et vérifier si on a atteint le nombre maximum
+inc dword[compteur]
+cmp dword[compteur],dword[boucle]
+jg fin_boucle
+
+
+
+
 mov rdi,qword[display_name]
 mov rsi,qword[window]
 mov rdx,qword[gc]
@@ -313,6 +325,28 @@ mov r9d, [tab_coord + 4 * 4]; coordonnée destination en x
 mov r12d,[tab_coord + 5 * 4]; coordonnée destination en y
 push r12	; coordonnée destination en y
 call XDrawLine
+
+
+; Aller à la prochaine itération
+jmp debut_boucle
+
+fin_boucle:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ; ############################
