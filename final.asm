@@ -50,7 +50,7 @@ gc:		resq	1
 section .data
 number: dd 400
 tour_triangle: db 6 
-repetition_atteint: dd 5
+nombre_triangle: dd 5
 test: dd "nombre = %d",10,0
 
 event:		times	24 dq 0
@@ -221,8 +221,8 @@ call XDrawLine
 
 call val
 
-dec dword[repetition_atteint]
-cmp dword[repetition_atteint],1
+dec dword[nombre_triangle]
+cmp dword[nombre_triangle],1
 jg debut_boucle
 
 
