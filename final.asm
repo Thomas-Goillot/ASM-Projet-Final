@@ -5,7 +5,6 @@
 
 ; -------------------------------------------------------------
 
-; external functions from X11 library
 extern XOpenDisplay
 extern XDisplayName
 extern XCloseDisplay
@@ -22,7 +21,7 @@ extern XFillArc
 extern XNextEvent
 extern srand
 
-; external functions from stdio library (ld-linux-x86-64.so.2)    
+  
 extern printf
 extern exit
 
@@ -114,7 +113,7 @@ push rbp
     ;couleur de la ligne 1
     mov rdi,qword[display_name]
     mov rsi,qword[gc]
-    mov edx,0x000000	; Couleur du crayon ; noir
+    mov edx,0x000000	
     call XSetForeground
     jmp fin1
 
@@ -122,7 +121,7 @@ push rbp
     ;couleur du point 1
     mov rdi,qword[display_name]
     mov rsi,qword[gc]
-    mov edx,0xFF0000	; Couleur du crayon ; rouge
+    mov edx,0xFF0000	
     call XSetForeground
     jmp fin1
     
@@ -130,7 +129,7 @@ push rbp
     ;couleur du point 2
     mov rdi,qword[display_name]
     mov rsi,qword[gc]
-    mov edx,0x00FF00	; Couleur du crayon ; vert
+    mov edx,0x00FF00	
     call XSetForeground
     jmp fin1
 
@@ -138,7 +137,7 @@ push rbp
     ;couleur du point 4
     mov rdi,qword[display_name]
     mov rsi,qword[gc]
-    mov edx,0xFF00FF	; Couleur du crayon ; violet
+    mov edx,0xFF00FF	
     call XSetForeground
     jmp fin1
 
@@ -146,7 +145,7 @@ push rbp
     ;couleur du point 3
     mov rdi,qword[display_name]
     mov rsi,qword[gc]
-    mov edx,0x0000FF	; Couleur du crayon ; bleu
+    mov edx,0x0000FF	
     call XSetForeground
     
 
@@ -191,7 +190,7 @@ push rbp
     sub dword[X1],eax
 
 
-    mov eax,dword[X1];RESULTAT DU CALCUL
+    mov eax,dword[X1]
 
 fin2:
 pop rbp
@@ -206,18 +205,18 @@ val:
     push rbp
     mov rbp, rsp
     
-    ; Générer un nombre aléatoire avec la fonction RDRAND
-    mov ecx, 10 ; Limite le nombre de tentatives à 10
+  
+    mov ecx, 10 
     loop:
         xor eax, eax
         rdrand eax
         jc success
         loop loop
-        mov eax, [number] ; Si la génération aléatoire a échoué, prendre la valeur 400
+        mov eax, [number] 
 
 
     success:
-    ; S'assurer que la valeur générée est entre 0 et 399
+   
     xor edx, edx
     div dword [number]
     mov eax, edx
@@ -231,11 +230,10 @@ main:
 
 
 xor     rdi,rdi
-call    XOpenDisplay	; Création de display
-mov     qword[display_name],rax	; rax=nom du display
+call    XOpenDisplay	
+mov     qword[display_name],rax	
 
-; display_name structure
-; screen = DefaultScreen(display_name);
+
 mov     rax,qword[display_name]
 mov     eax,dword[rax+0xe0]
 mov     dword[screen],eax
@@ -249,9 +247,9 @@ mov rdi,qword[display_name]
 mov rsi,rbx
 mov rdx,10
 mov rcx,10
-mov r8,400	; largeur
-mov r9,400	; hauteur
-push 0xFFFFFF	; background  0xRRGGBB
+mov r8,400	
+mov r9,400	
+push 0xFFFFFF	
 push 0x00FF00
 push 1
 call XCreateSimpleWindow
@@ -274,19 +272,19 @@ mov qword[gc],rax
 
 mov rdi,qword[display_name]
 mov rsi,qword[gc]
-mov rdx,0x000000	; Couleur du crayon
+mov rdx,0x000000	
 call XSetForeground
 
-boucle: ; boucle de gestion des évènements
+boucle: 
 mov rdi,qword[display_name]
 mov rsi,event
 call XNextEvent
 
-cmp dword[event],ConfigureNotify	; à l'apparition de la fenêtre
-je dessin							; on saute au label 'dessin'
+cmp dword[event],ConfigureNotify	
+je dessin							
 
-cmp dword[event],KeyPress			; Si on appuie sur une touche
-je closeDisplay						; on saute au label 'closeDisplay' qui ferme la fenêtre
+cmp dword[event],KeyPress		
+je closeDisplay					
 jmp boucle
 
 ;#########################################
@@ -297,8 +295,8 @@ dessin:
 
 
 debut_boucle:
- ; Initialiser le générateur de nombres aléatoires
-    rdtsc ; Utiliser l'horodatage CPU comme graine
+ 
+    rdtsc
     mov ecx, eax
     mov eax, [rsp+4]
     xor eax, ecx
@@ -309,7 +307,7 @@ debut_boucle:
 
     mov r8, tab_coord
 
-    ; Générer les valeurs de tab_coord
+  
     mov byte[tour_triangle], 6 
     .jumpe_triangle:
         call val
@@ -323,37 +321,37 @@ debut_boucle:
 mov rdi,qword[display_name]
 mov rsi,qword[window]
 mov rdx,qword[gc]
-mov ecx, [tab_coord + 0 * 4]	; coordonnée source en x
-mov r8d, [tab_coord + 1 * 4]	; coordonnée source en y
-mov r9d, [tab_coord + 2 * 4]	; coordonnée destination en x
-mov r12d, [tab_coord + 3 * 4]	; coordonnée destination en y
-push r12	; coordonnée destination en y
+mov ecx, [tab_coord + 0 * 4]	
+mov r8d, [tab_coord + 1 * 4]	
+mov r9d, [tab_coord + 2 * 4]	
+mov r12d, [tab_coord + 3 * 4]	
+push r12	
 call XDrawLine
 
 mov rdi,qword[display_name]
 mov rsi,qword[window]
 mov rdx,qword[gc]
-mov ecx, [tab_coord + 2 * 4]	; coordonnée source en x
-mov r8d, [tab_coord + 3 * 4]	; coordonnée source en y
-mov r9d, [tab_coord + 4 * 4]; coordonnée destination en x
-mov r12d,[tab_coord + 5 * 4]; coordonnée destination en y
-push r12	; coordonnée destination en y
+mov ecx, [tab_coord + 2 * 4]	
+mov r8d, [tab_coord + 3 * 4]
+mov r9d, [tab_coord + 4 * 4]
+mov r12d,[tab_coord + 5 * 4]
+push r12	
 call XDrawLine
 
 mov rdi,qword[display_name]
 mov rsi,qword[window]
 mov rdx,qword[gc]
-mov ecx, [tab_coord + 0 * 4]	; coordonnée source en x
-mov r8d, [tab_coord + 1 * 4]	; coordonnée source en y
-mov r9d, [tab_coord + 4 * 4]; coordonnée destination en x
-mov r12d,[tab_coord + 5 * 4]; coordonnée destination en y
-push r12	; coordonnée destination en y
+mov ecx, [tab_coord + 0 * 4]	
+mov r8d, [tab_coord + 1 * 4]	
+mov r9d, [tab_coord + 4 * 4]
+mov r12d,[tab_coord + 5 * 4]
+push r12	
 call XDrawLine
 
 call val
 
 
-;ENVOIE DES COORDONNEES A LA FONCTION CALCUL
+
 mov edi, [tab_coord + 0 * 4]
 mov esi, [tab_coord + 1 * 4]
 mov edx, [tab_coord + 2 * 4]
@@ -362,7 +360,7 @@ mov r8d, [tab_coord + 4 * 4]
 mov r9d, [tab_coord + 5 * 4]
 call calcul
 
-;TRIANGLE DIRECT OU INDIRECT
+
 mov dword[determinant],eax
 
 
@@ -416,8 +414,8 @@ boucle1:
     mov rdi,qword[display_name]
     mov rsi,qword[window]
     mov rdx,qword[gc]
-    mov ecx,[pt_coord + 0 * 4]	; coordonnée source en x
-    mov r8d,[pt_coord + 1 * 4]	; coordonnée source en y
+    mov ecx,[pt_coord + 0 * 4]	
+    mov r8d,[pt_coord + 1 * 4]	
     call XDrawPoint
 
 
