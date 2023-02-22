@@ -50,7 +50,7 @@ gc:		resq	1
 section .data
 number: dd 400
 tour_triangle: db 6 
-nombre_triangle: dd 5
+nombre_triangle: dd 7
 test: dd "nombre = %d",10,0
 
 event:		times	24 dq 0

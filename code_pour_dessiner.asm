@@ -37,6 +37,7 @@ global main
 
 section .bss
 tab_coord: resd 6
+pt_coord: resd 2
 display_name:	resq	1
 screen:			resd	1
 depth:         	resd	1
@@ -45,12 +46,21 @@ width:         	resd	1
 height:        	resd	1
 window:		resq	1
 gc:		resq	1
+determinant:    resd    1
+X1: resd    1
+X2: resd    1
+Y1: resd    1
+Y2: resd    1
+Angle1: resd    1
+Angle2: resd    1
+Angle3: resd    1
 
 section .data
 number: dd 400
 tour_triangle: db 6
 
 event:		times	24 dq 0
+tour_couleur:   dd  0
 
 x1:	dd	0
 x2:	dd	0
@@ -91,6 +101,106 @@ val:
     pop rbp
     ret
 
+;##################################################
+;########### FCT COULEUR         ##################
+;##################################################
+global couleur_triangle
+couleur_triangle:
+push rbp
+
+    cmp r12d,4
+    jge rouge
+
+    cmp r12d,3
+    jge vert
+
+    cmp r12d,2
+    jge violet
+
+    cmp r12d,1
+    jge bleu
+
+    noir:
+    ;couleur de la ligne 1
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0x000000	; Couleur du crayon ; noir
+    call XSetForeground
+    jmp fin1
+
+    rouge:
+    ;couleur du point 1
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0xFF0000	; Couleur du crayon ; rouge
+    call XSetForeground
+    jmp fin1
+    
+    vert:
+    ;couleur du point 2
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0x00FF00	; Couleur du crayon ; vert
+    call XSetForeground
+    jmp fin1
+
+    violet:
+    ;couleur du point 4
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0xFF00FF	; Couleur du crayon ; violet
+    call XSetForeground
+    jmp fin1
+
+    bleu:
+    ;couleur du point 3
+    mov rdi,qword[display_name]
+    mov rsi,qword[gc]
+    mov edx,0x0000FF	; Couleur du crayon ; bleu
+    call XSetForeground
+    
+
+fin1:
+mov eax, r12d
+pop rbp
+ret
+
+;##################################################
+;########### FCT CALCUL         ##################
+;##################################################
+global calcul
+calcul:
+push rbp
+
+    sub edx,edi
+    mov dword[X1], edx
+    
+    sub r8d,edi
+    mov dword[X2], r8d
+    
+    sub ecx,esi
+    mov dword[Y1], ecx
+
+    sub r9d,esi
+    mov dword[Y2], r9d
+
+    mov eax, dword[Y2]
+    mul dword[X1]
+    mov dword[X1], eax
+
+    mov eax, dword[Y1]
+    mul dword[X2]
+    mov dword[X2], eax
+
+    mov eax,dword[X2]
+    sub dword[X1],eax
+
+
+    mov eax,dword[X1];RESULTAT DU CALCUL
+
+fin2:
+pop rbp
+ret
 
 main:
 
@@ -182,104 +292,12 @@ jmp boucle
 ;#########################################
 dessin:
 
-; couleurs sous forme RRGGBB où RR esr le niveau de rouge, GG le niveua de vert et BB le niveau de bleu
-; 0000000 (noir) à FFFFFF (blanc)
-
-;couleur du point 1
-mov rdi,qword[display_name]
-mov rsi,qword[gc]
-mov edx,0xFF0000	; Couleur du crayon ; rouge
-call XSetForeground
-
-; Dessin d'un point rouge : coordonnées (100,200)
-mov rdi,qword[display_name]
-mov rsi,qword[window]
-mov rdx,qword[gc]
-mov ecx,100	; coordonnée source en x
-mov r8d,200	; coordonnée source en y
-call XDrawPoint
-
-;couleur du point 2
-mov rdi,qword[display_name]
-mov rsi,qword[gc]
-mov edx,0x00FF00	; Couleur du crayon ; vert
-call XSetForeground
-
-; Dessin d'un point vert: coordonnées (100,250)
-mov rdi,qword[display_name]
-mov rsi,qword[window]
-mov rdx,qword[gc]
-mov ecx,100	; coordonnée source en x
-mov r8d,250	; coordonnée source en y
-call XDrawPoint
-
-;couleur du point 3
-mov rdi,qword[display_name]
-mov rsi,qword[gc]
-mov edx,0x0000FF	; Couleur du crayon ; bleu
-call XSetForeground
-
-; Dessin d'un point bleu : coordonnées (200,200)
-mov rdi,qword[display_name]
-mov rsi,qword[window]
-mov rdx,qword[gc]
-mov ecx,200	; coordonnée source en x
-mov r8d,200	; coordonnée source en y
-call XDrawPoint
-
-;couleur du point 4
-mov rdi,qword[display_name]
-mov rsi,qword[gc]
-mov edx,0xFF00FF	; Couleur du crayon ; violet
-call XSetForeground
-
-; Dessin d'un point violet : coordonnées (200,250)
-mov rdi,qword[display_name]
-mov rsi,qword[window]
-mov rdx,qword[gc]
-mov ecx,200	; coordonnée source en x
-mov r8d,250	; coordonnée source en y
-call XDrawPoint
-
 ;couleur de la ligne 1
 mov rdi,qword[display_name]
 mov rsi,qword[gc]
 mov edx,0x000000	; Couleur du crayon ; noir
 call XSetForeground
-; coordonnées de la ligne 1 (noire)
-mov dword[x1],50
-mov dword[y1],50
-mov dword[x2],200
-mov dword[y2],350
-; dessin de la ligne 1
-mov rdi,qword[display_name]
-mov rsi,qword[window]
-mov rdx,qword[gc]
-mov ecx,dword[x1]	; coordonnée source en x
-mov r8d,dword[y1]	; coordonnée source en y
-mov r9d,dword[x2]	; coordonnée destination en x
-push qword[y2]		; coordonnée destination en y
-call XDrawLine
 
-;couleur de la ligne 2
-mov rdi,qword[display_name]
-mov rsi,qword[gc]
-mov edx,0xFFAA00	; Couleur du crayon ; orange
-call XSetForeground
-; coordonnées de la ligne 1 (noire)
-mov dword[x1],300
-mov dword[y1],50
-mov dword[x2],50
-mov dword[y2],350
-; dessin de la ligne 1
-mov rdi,qword[display_name]
-mov rsi,qword[window]
-mov rdx,qword[gc]
-mov ecx,dword[x1]	; coordonnée source en x
-mov r8d,dword[y1]	; coordonnée source en y
-mov r9d,dword[x2]	; coordonnée destination en x
-push qword[y2]		; coordonnée destination en y
-call XDrawLine
 
 mov rdi,qword[display_name]
 mov rsi,qword[window]
@@ -311,10 +329,89 @@ mov r12d,[tab_coord + 5 * 4]; coordonnée destination en y
 push r12	; coordonnée destination en y
 call XDrawLine
 
+;ENVOIE DES COORDONNEES A LA FONCTION CALCUL
+mov edi, [tab_coord + 0 * 4]
+mov esi, [tab_coord + 1 * 4]
+mov edx, [tab_coord + 2 * 4]
+mov ecx, [tab_coord + 3 * 4]
+mov r8d, [tab_coord + 4 * 4]
+mov r9d, [tab_coord + 5 * 4]
+call calcul
+
+;TRIANGLE DIRECT OU INDIRECT
+mov dword[determinant],eax
+
+
+mov dword[pt_coord + 0 * 4],0
+mov dword[pt_coord + 0 * 4],0
+
+remise_a_zero:
+    mov dword[pt_coord + 0 * 4],0
+
+boucle1:
+    inc dword[pt_coord + 1 * 4]
+
+    mov edi, [tab_coord + 0 * 4]
+    mov esi, [tab_coord + 1 * 4]
+    mov edx, [pt_coord + 0 * 4]
+    mov ecx, [pt_coord + 1 * 4]
+    mov r8d, [tab_coord + 2 * 4]
+    mov r9d, [tab_coord + 3 * 4]
+    call calcul
+
+    ;ANGLE1
+    mov dword[Angle1],eax
+
+    mov edi, [tab_coord + 4 * 4]
+    mov esi, [tab_coord + 5 * 4]
+    mov edx, [pt_coord + 0 * 4]
+    mov ecx, [pt_coord + 1 * 4]
+    mov r8d, [tab_coord + 0 * 4]
+    mov r9d, [tab_coord + 1 * 4]
+    call calcul
+
+    ;ANGLE2
+    mov dword[Angle2],eax
+
+    mov edi, [tab_coord + 4 * 4]
+    mov esi, [tab_coord + 5 * 4]
+    mov edx, [pt_coord + 0 * 4]
+    mov ecx, [pt_coord + 1 * 4]
+    mov r8d, [tab_coord + 0 * 4]
+    mov r9d, [tab_coord + 1 * 4]
+    call calcul
+
+    ;ANGLE3
+    mov dword[Angle3],eax
+
+    ;change la couleur
+    mov r12d, dword[tour_couleur]
+    call couleur_triangle
+    mov dword[tour_couleur], eax
+
+    mov rdi,qword[display_name]
+    mov rsi,qword[window]
+    mov rdx,qword[gc]
+    mov ecx,[pt_coord + 0 * 4]	; coordonnée source en x
+    mov r8d,[pt_coord + 1 * 4]	; coordonnée source en y
+    call XDrawPoint
 
 ; ############################
 ; # FIN DE LA ZONE DE DESSIN #
 ; ############################
+
+    boucle2:
+    inc dword[pt_coord + 0 * 4]
+
+    cmp dword[pt_coord + 0 * 4],400
+    jge flush
+
+    cmp dword[pt_coord + 1 * 4],400
+    jge remise_a_zero
+
+    cmp dword[pt_coord + 0 * 4],400
+    jge boucle2
+
 jmp flush
 
 flush:
