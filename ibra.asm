@@ -33,7 +33,7 @@ extern exit
 %define DWORD	4
 %define WORD	2
 %define BYTE	1
-%define nombre_repetition 3
+%define nombre_repetition 6
 
 global main
 

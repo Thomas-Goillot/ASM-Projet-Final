@@ -33,7 +33,6 @@ extern exit
 %define DWORD	4
 %define WORD	2
 %define BYTE	1
-%define nombre_repetition 3
 
 global main
 
@@ -51,7 +50,7 @@ gc:		resq	1
 section .data
 number: dd 400
 tour_triangle: db 6 
-repetition_atteint: dd nombre_repetition
+repetition_atteint: dd 5
 test: dd "nombre = %d",10,0
 
 event:		times	24 dq 0
@@ -247,3 +246,4 @@ closeDisplay:
     xor	    rdi,rdi
     call    exit
 	
+
