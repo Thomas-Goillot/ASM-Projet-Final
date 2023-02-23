@@ -1,6 +1,6 @@
 ; Auteur : Ibrahim OUBIHI / Thomas GOILLOT / Joshua TANG TONG HI
 ; Date : 24 fevvrier 2023
-; Description : Projet Assembleur x64
+; Description : Projet Assembleur
 
 
 ; -------------------------------------------------------------
